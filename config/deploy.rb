@@ -23,18 +23,42 @@ set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rben
 set :rbenv_map_bins, %w{rake gem bundle ruby rails}
 set :rbenv_roles, :all # default value
 
+set :linked_files, %w{config/database.yml}
 set :linked_dirs, %w{bin log tmp/backup tmp/pids tmp/cache tmp/sockets vendor/bundle}
 set :unicorn_pid, "#{shared_path}/tmp/pids/unicorn.pid"
 
 set :bundle_jobs, 4
 
-after 'deploy:publishing', 'deploy:restart'
+#after 'deploy:publishing', 'deploy:restart'
 
 namespace :deploy do
+
+  desc 'Upload database.yml'
+  task :upload do
+    on roles(:app) do |host|
+      if test "[ ! -d #{shared_path}/config ]"
+        execute "mkdir -p #{shared_path}/config"
+      end
+      upload!('config/database.yml', "#{shared_path}/config/database.yml")
+    end
+  end
+
+  desc 'Create Database'
+  task :db_create do
+    on roles(:db) do |host|
+      with rails_env: fetch(:rails_env) do
+        within current_path do
+          execute :bundle, :exec, :rake, 'db:create'
+        end
+      end
+    end
+  end
 
   desc 'Restart application'
   task :restart do
     invoke 'unicorn:restart'
   end
 
+  before :starting, :upload
+  after :publishing, :restart
 end
