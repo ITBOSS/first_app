@@ -31,6 +31,10 @@ set :bundle_jobs, 4
 
 #after 'deploy:publishing', 'deploy:restart'
 
+# SSHKit.conifg
+SSHKit.config.command_map[:rake] = 'bundle exec rake'
+
+
 namespace :deploy do
 
   desc 'Upload database.yml'
@@ -40,6 +44,17 @@ namespace :deploy do
         execute "mkdir -p #{shared_path}/config"
       end
       upload!('config/database.yml', "#{shared_path}/config/database.yml")
+    end
+  end
+
+  desc 'db_seed must be run only one time right after the first deploy'
+  task :db_seed do
+    on roles(:db) do |host|
+      within current_path do
+        with rails_env: fetch(:rails_env) do
+          execute :rake, 'db:seed'
+        end
+      end
     end
   end
 
@@ -54,13 +69,3 @@ namespace :deploy do
   after :publishing, :restart
 end
 
-desc 'Create Database'
-task :db_create do
-  on roles(:db) do |host|
-    #with rails_env: fetch(:rails_env) do
-      #within current_path do
-        execute :bundle, :exec, :rake, 'db:migrate'
-      #end
-    #nd
-  end
-end
