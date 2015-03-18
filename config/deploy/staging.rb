@@ -14,8 +14,7 @@ set :unicorn_rack_env, "staging"
 role :app, %w{root@192.168.33.12}
 #role :app, %w{vagrant@192.168.33.12}
 #role :web, %w{vagrant@192.168.33.12}
-#role :db,  %w{vagrant@192.168.33.12}
-
+#role :db, %w{vagrant@192.168.33.12}
 
 # Extended Server Syntax
 # ======================
@@ -24,7 +23,6 @@ role :app, %w{root@192.168.33.12}
 # used to set extended properties on the server.
 
 #server 'example.com', user: 'deploy', roles: %w{web app}, my_property: :my_value
-#server '192.168.33.12', user: 'vagrant', roles: %w{app}
 server '192.168.33.12', user: 'root', roles: %w{app}
 
 set :ssh_options, {
@@ -33,7 +31,6 @@ set :ssh_options, {
      #auth_methods: %w(publickey)
      auth_methods: %w(password)
 }
-
 
 
 # Custom SSH Options

@@ -32,7 +32,7 @@ after 'deploy:publishing', 'deploy:restart'
 
 namespace :deploy do
 
-  desc 'Restart application'  
+  desc 'Restart application'
   task :restart do
     invoke 'unicorn:restart'
   end
