@@ -22,8 +22,8 @@ listen "/tmp/unicorn.sock", :backlog => 64
 pid "#{app_path}/shared/tmp/pids/unicorn.pid"
 
 # Set the path of the log files inside the log folder of the testapp
-stderr_path "#{app_path}/log/unicorn.stderr.log"
-stdout_path "#{app_path}/log/unicorn.stdout.log"
+stderr_path "#{app_path}/current/log/unicorn.stderr.log"
+stdout_path "#{app_path}/current/log/unicorn.stdout.log"
 
 before_fork do |server, worker|
   ENV['BUNDLE_GEMFILE'] = File.expand_path('Gemfile', ENV['RAILS_ROOT'])
