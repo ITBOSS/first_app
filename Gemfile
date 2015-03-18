@@ -1,3 +1,4 @@
+# coding: utf-8
 source 'https://rubygems.org'
 
 
@@ -34,6 +35,14 @@ gem 'unicorn'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
+
+group :deployment do
+  gem 'capistrano', '~> 3.2.1'
+  gem 'capistrano-rails'
+  gem 'capistrano-rbenv'
+  gem 'capistrano-bundler'
+  gem 'capistrano3-unicorn' # unicornを使っている場合のみ
+end
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
