@@ -19,7 +19,7 @@ timeout 30
 listen "/tmp/unicorn.sock", :backlog => 64
 
 #pid "/tmp/unicorn.pid"
-pid "#{app_path}/tmp/pids/unicorn.pid"
+pid "#{app_path}/shared/tmp/pids/unicorn.pid"
 
 # Set the path of the log files inside the log folder of the testapp
 stderr_path "#{app_path}/log/unicorn.stderr.log"
