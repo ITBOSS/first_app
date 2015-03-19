@@ -36,7 +36,7 @@ gem 'unicorn'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
-group :deployment do
+group :deployment, :test do
   gem 'capistrano', '~> 3.2.1'
   gem 'capistrano-rails'
   gem 'capistrano-rbenv'
