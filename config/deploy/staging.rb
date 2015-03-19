@@ -15,7 +15,7 @@ set :ssh_options, {
      keys: [File.expand_path('/root/.ssh/id_rsa')],
      forward_agent: true,
      #auth_methods: %w(publickey)
-     auth_methods: %w(password)
+     auth_methods: %w(password),
      password: 'vagrant'
 }
 
