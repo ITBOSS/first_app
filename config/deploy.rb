@@ -75,28 +75,22 @@ after 'deploy:publishing', 'deploy:restart'
 
 
 namespace :rails do
-  desc "Start a rails console, for now just with the primary server"
+  desc "Remote console"
   task :c do
-    on roles(:app), primary: true do |host|
-      rails_env = fetch(:rails_env)
-      execute_remote_command_with_input "#{bundle_cmd_with_rbenv} #{current_path}/script/rails console #{rails_env}"
+    on roles(:app) do |h|
+      run_interactively "bundle exec rails console #{fetch(:rails_env)}", h.user
     end
   end
 
-  def execute_remote_command_with_input(command)
-    port = fetch(:port) || 22
-    puts "opening a console on: #{host}...."
-    cmd = "ssh -l #{fetch(:deploy_user)} #{host} -p #{port} -t 'cd #{deploy_to}/current && #{command}'"
-    exec cmd
+  desc "Remote dbconsole"
+  task :dbconsole do
+    on roles(:app) do |h|
+      run_interactively "bundle exec rails dbconsole #{fetch(:rails_env)}", h.user
+    end
   end
 
-  def bundle_cmd_with_rbenv
-    if fetch(:rbenv_ruby)
-      "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rbenv_ruby)} #{fetch(:rbenv_path)}/bin/rbenv exec bundle exec"
-      #"RBENV_VERSION=#{fetch(:rbenv_ruby)} RBENV_ROOT=#{fetch(:rbenv_path)}  #{File.join(fetch(:rbenv_path), '/bin/rbenv')} exec bundle exec"
-    else
-      "ruby "
-    end
+  def run_interactively(command, user)
+    info "Running `#{command}` as #{user}@#{host}"
+    exec %Q(ssh #{user}@#{host} -t "bash --login -c 'cd #{fetch(:deploy_to)}/current && #{command}'")
   end
 end
-
