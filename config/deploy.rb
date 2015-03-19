@@ -1,3 +1,4 @@
+# coding: utf-8
 # config valid only for Capistrano 3.1
 lock '3.2.1'
 
@@ -13,6 +14,11 @@ set :deploy_to, '/vagrant/workspace/first_app'
 # Default value for :scm is :git
 set :scm, :git
 
+set :format, :pretty
+set :log_level, :debug
+
+set :pty, true
+
 # Default value for keep_releases is 5
 set :keep_releases, 5
 
@@ -25,15 +31,11 @@ set :rbenv_roles, :all # default value
 
 set :linked_files, %w{config/database.yml}
 set :linked_dirs, %w{bin log tmp/backup tmp/pids tmp/cache tmp/sockets vendor/bundle}
-set :unicorn_pid, "#{shared_path}/tmp/pids/unicorn.pid"
-
-set :bundle_jobs, 4
-
-#after 'deploy:publishing', 'deploy:restart'
+#set :unicorn_pid, "#{shared_path}/tmp/pids/unicorn.pid"
+#set :bundle_jobs, 4
 
 # SSHKit.conifg
-SSHKit.config.command_map[:rake] = 'bundle exec rake'
-
+#SSHKit.config.command_map[:rake] = 'bundle exec rake'
 
 namespace :deploy do
 
@@ -47,16 +49,16 @@ namespace :deploy do
     end
   end
 
-  desc 'db_seed must be run only one time right after the first deploy'
-  task :db_seed do
-    on roles(:db) do |host|
-      within current_path do
-        with rails_env: fetch(:rails_env) do
-          execute :rake, 'db:seed'
-        end
-      end
-    end
-  end
+#  desc 'db_seed must be run only one time right after the first deploy'
+#  task :db_seed do
+#    on roles(:db) do |host|
+#      within current_path do
+#        with rails_env: fetch(:rails_env) do
+#          execute :rake, 'db:seed'
+#        end
+#      end
+#    end
+#  end
 
   desc 'Restart application'
   task :restart do
@@ -64,8 +66,9 @@ namespace :deploy do
       invoke 'unicorn:restart'
     end
   end
-
-  before :starting, :upload
-  after :publishing, :restart
 end
 
+
+before 'deploy:starting', 'deploy:upload'
+# Capistrano 3.1.0 からデフォルトで deploy:restart タスクが呼ばれなくなったので、ここに以下の1行を書く必要がある
+after 'deploy:publishing', 'deploy:restart'
