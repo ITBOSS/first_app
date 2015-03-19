@@ -92,7 +92,6 @@ namespace :rails do
   def run_interactively(command, user)
     info "Running `#{command}` as #{user}@#{host}"
     #exec %Q(ssh #{user}@#{host} -t "bash --login -c 'cd #{fetch(:deploy_to)}/current && #{command}'")
-    exec %Q(ssh #{user}@#{host} -t "'cd #{fetch(:deploy_to)}/current && #{command}'")
+    exec %Q(ssh #{user}@#{host} -t " 'cd #{fetch(:deploy_to)}/current && #{command}'")
   end
 end
-OB
