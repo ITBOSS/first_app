@@ -77,7 +77,7 @@ after 'deploy:publishing', 'deploy:restart'
 namespace :rails do
   desc "Start a rails console, for now just with the primary server"
   task :c do
-    on roles(:app), primary: true do |role|
+    on roles(:app), primary: true do |host|
       rails_env = fetch(:rails_env)
       execute_remote_command_with_input "#{bundle_cmd_with_rbenv} #{current_path}/script/rails console #{rails_env}"
     end
@@ -92,7 +92,7 @@ namespace :rails do
 
   def bundle_cmd_with_rbenv
     if fetch(:rbenv_ruby)
-      "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rbenv_ruby)} #{fetch(:rbenv_path)}/bin/rbenv exec"
+      "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rbenv_ruby)} #{fetch(:rbenv_path)}/bin/rbenv exec bundle exec"
       #"RBENV_VERSION=#{fetch(:rbenv_ruby)} RBENV_ROOT=#{fetch(:rbenv_path)}  #{File.join(fetch(:rbenv_path), '/bin/rbenv')} exec bundle exec"
     else
       "ruby "
