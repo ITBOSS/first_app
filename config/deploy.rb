@@ -72,3 +72,30 @@ end
 before 'deploy:starting', 'deploy:upload'
 # Capistrano 3.1.0 からデフォルトで deploy:restart タスクが呼ばれなくなったので、ここに以下の1行を書く必要がある
 after 'deploy:publishing', 'deploy:restart'
+
+
+namespace :rails do
+  desc "Start a rails console, for now just with the primary server"
+  task :c do
+    on roles(:app), primary: true do |role|
+      rails_env = fetch(:rails_env)
+      execute_remote_command_with_input "#{bundle_cmd_with_rbenv} #{current_path}/script/rails console #{rails_env}"
+    end
+  end
+
+  def execute_remote_command_with_input(command)
+    port = fetch(:port) || 22
+    puts "opening a console on: #{host}...."
+    cmd = "ssh -l #{fetch(:deploy_user)} #{host} -p #{port} -t 'cd #{deploy_to}/current && #{command}'"
+    exec cmd
+  end
+
+  def bundle_cmd_with_rbenv
+    if fetch(:rbenv_ruby)
+      "RBENV_VERSION=#{fetch(:rbenv_ruby)} RBENV_ROOT=#{fetch(:rbenv_path)}  #{File.join(fetch(:rbenv_path), '/bin/rbenv')} exec bundle exec"
+    else
+      "ruby "
+    end
+  end
+end
+
