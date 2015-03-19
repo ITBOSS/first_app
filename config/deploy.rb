@@ -72,26 +72,3 @@ end
 before 'deploy:starting', 'deploy:upload'
 # Capistrano 3.1.0 からデフォルトで deploy:restart タスクが呼ばれなくなったので、ここに以下の1行を書く必要がある
 after 'deploy:publishing', 'deploy:restart'
-
-
-namespace :rails do
-  desc "Remote console"
-  task :c do
-    on roles(:app) do |h|
-      run_interactively "bundle exec rails console #{fetch(:rails_env)}", h.user
-    end
-  end
-
-  desc "Remote dbconsole"
-  task :dbconsole do
-    on roles(:app) do |h|
-      run_interactively "bundle exec rails dbconsole #{fetch(:rails_env)}", h.user
-    end
-  end
-
-  def run_interactively(command, user)
-    info "Running `#{command}` as #{user}@#{host}"
-    #exec %Q(ssh #{user}@#{host} -t "bash --login -c 'cd #{fetch(:deploy_to)}/current && #{command}'")
-    exec %Q(ssh #{user}@#{host} -t " 'cd #{fetch(:deploy_to)}/current && #{command}'")
-  end
-end

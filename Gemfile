@@ -39,7 +39,6 @@ group :deployment, :test do
   gem 'capistrano-rbenv'
   gem 'capistrano-bundler'
   gem 'capistrano3-unicorn' # unicornを使っている場合のみ
-  gem 'capistrano-rails-console' # 手元の環境からデプロイ先のconsoleを使う
 end
 
 # Use debugger
