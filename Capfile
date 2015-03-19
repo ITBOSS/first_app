@@ -10,6 +10,7 @@ require 'capistrano/rbenv'
 
 require 'capistrano/rails'
 require 'capistrano/rails/assets'
+require 'capistrano/rails/console'
 require 'capistrano/rails/migrations'
 require 'capistrano/bundler'
 
