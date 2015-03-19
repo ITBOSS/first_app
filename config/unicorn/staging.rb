@@ -14,7 +14,6 @@ timeout 30
 
 # This is where we specify the socket.
 # We will point the upstream Nginx module to this socket later on
-#listen "/tmp/unicorn.sock", :backlog => 64
 #listen "#{app_path}/tmp/sockets/unicorn.sock", :backlog => 64
 listen "/tmp/unicorn.sock", :backlog => 64
 
